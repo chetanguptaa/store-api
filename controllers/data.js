@@ -1,4 +1,3 @@
-const express= require('express');
 const Product = require('../models/product');
 
 const getProducts = async (req, res) => {
@@ -21,17 +20,17 @@ const getProducts = async (req, res) => {
       '<':'$lt',
       '<=':'$lte',
     };
-    const regEx = /\b(<|>|>=|=|<|<=)\b/g;
-    let filters = numericFilters.replace(regEx,
-        (match) => `-${operatorMap[match]}-`);
-    const options = ['price', 'rating'];
-    filters = filters.split(',').forEach((item) => {
-      const [field, operator, value] = item.split('-');
-      if (options.includes(field)) {
-        queryObject[field] = { [operator]: Number(value) };
-      }
-    });
-  }
+  const regEx = /\b(<|>|>=|=|<|<=)\b/g;
+  let filters = numericFilters.replace(regEx,
+    (match) => `-${operatorMap[match]}-`);
+  const options = ['price', 'rating'];
+  filters = filters.split(',').forEach((item) => {
+    const [field, operator, value] = item.split('-');
+    if (options.includes(field)) {
+      queryObject[field] = { [operator]: Number(value) };
+    }
+  });
+}
 
   let result = Product.find(queryObject);
   // sort

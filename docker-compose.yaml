@@ -1,19 +1,20 @@
 version: '3'
 
 services:
+
   mongodb:
     image: mongo
     restart: always
     ports:
       - 27017:27017
     environment:
-      MONGO_INIT_ROOT_USERNAME: store
-      MONGO_INIT_ROOT_PASSWORD: storeapi
+      MONGO_INITDB_ROOT_USERNAME: admin
+      MONGO_INITDB_ROOT_PASSWORD: password
     volumes:
-      - mongodb-api:/data/db
+      - mongodb-data:/data/db
     networks:
-      - store-network
-  
+      - mongo-network
+
   mongo-express:
     image: mongo-express
     restart: always
@@ -22,10 +23,10 @@ services:
     environment:
       ME_CONFIG_MONGODB_SERVER: mongodb
       ME_CONFIG_MONGODB_PORT: 27017
-      ME_CONFIG_MONGODB_ADMINUSERNAME: store
-      ME_CONFIG_MONGODB_ADMINPASSWORD: storeapi
+      ME_CONFIG_MONGODB_ADMINUSERNAME: admin
+      ME_CONFIG_MONGODB_ADMINPASSWORD: password
     networks:
-      - store-network
+      - mongo-network
 
   store-api:
     image: store-api:1.0
@@ -33,16 +34,16 @@ services:
     ports:
       - 3000:3000
     environment:
-      MONGOURI: mongodb://store:storeapi@mongodb:27017
+      MONGO_URI: mongodb://admin:password@mongodb:27017
     depends_on:
       - mongodb
     networks:
-      - store-network
-
-volumes:
-  mongodb-api:
-    driver: local
+      - mongo-network
 
 networks:
-  store-network:
+  mongo-network:
     driver: bridge
+
+volumes: 
+  mongodb-data:
+    driver: local
