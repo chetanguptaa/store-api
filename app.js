@@ -93,7 +93,7 @@ app.get('/api/v1/products/static', async (req, res) => {
 const port = 3000;
 const start = async () => {
   try {
-    await connectDB('mongodb://admin:password@localhost:27017')
+    await connectDB('mongodb://store:storeapi@mongodb:27017')
     app.listen(port, () => console.log(`app is listening on port ${port}...`))
   } catch(error) {
     console.log(error);
