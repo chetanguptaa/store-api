@@ -4,6 +4,9 @@ const express= require('express');
 const app = express();
 const mongoose = require('mongoose');
 const product = require('./models/product');
+const errorHandlerMiddleware = require('./middleware/error-handler');
+const notFound = require('./middleware/not-found');
+
 
 const connectDB = (url) => {
   return mongoose.connect(url, {
@@ -15,13 +18,15 @@ const connectDB = (url) => {
 }
 
 app.use(express.json());
+app.use(errorHandlerMiddleware);
+app.use(notFound);
 
 app.get('/', (req,res) => {
   res.send('<h1>Store API</h1><a href="/api/v1/products">products route</a>');
 });
 
 
-app.get('/', async (req, res) => {
+app.get('/api/v1/products', async (req, res) => {
   const { featured, company, name, sort, fields, numericFilters } = req.query;
   const queryObject = {};
   if ( featured) {
@@ -76,7 +81,7 @@ app.get('/', async (req, res) => {
 });
 
 
-app.get('/static', async (req, res) => {
+app.get('/api/v1/products/static', async (req, res) => {
   const products = await Product.find({price: {$gt: 30}})
     .sort('price')
     .select('name price');
