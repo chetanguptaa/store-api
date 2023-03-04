@@ -1,5 +1,10 @@
 pipeline {
-  agent any
+  agent {
+    docker {
+      image 'node:14'
+      args '-p 3000:3000'
+    }
+  }
   
   stages {
     stage('Build') {
@@ -10,16 +15,12 @@ pipeline {
     
     stage('Test') {
       steps {
-        sh 'npm test'
+        sh 'npm run test'
       }
     }
     
     stage('Deploy') {
-      environment {
-        // Set your deployment environment variables here
-      }
       steps {
-        sh 'npm run build'
         sh 'npm run deploy'
       }
     }
