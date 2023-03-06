@@ -28,7 +28,8 @@ app.use(errorHandlerMiddleware);
 const port = 3000;
 const start = async () => {
   try {
-    await connectDB('mongodb://admin:password@mongodb:27017')
+    // await connectDB('mongodb://admin:password@mongodb:27017')
+    await connectDB('mongodb://mongouser:mongopassword@mongo-service:27017')
     app.listen(port, () => console.log(`app is listening on port ${port}...`))
   } catch(error) {
     console.log(error);

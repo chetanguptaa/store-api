@@ -15,19 +15,9 @@ spec:
     spec:
       containers:
       - name: store-api
-        image: chetanguptaa/store-api:1.0
-        resources:
-          limits:
-            memory: "128Mi"
-            cpu: "500m"
+        image: chetanguptaa/store-api:2.0
         ports:
         - containerPort: 3000
-        env:
-          - name: MONGO_URI
-            valueFrom:
-              configMapKeyRef:
-                name: mongodb-configmap
-                key: mongo_uri
 
 ---
 
@@ -36,11 +26,12 @@ kind: Service
 metadata:
   name: store-api-service
 spec:
+  type: NodePort
   selector:
     app: store-api
-  type: ClusterIP
   ports:
-  - port: 80
-    targetPort: 3000
-    protocol: TCP
+    - protocol: TCP
+      port: 3000
+      targetPort: 3000
+      nodePort: 30200
 
