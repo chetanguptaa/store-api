@@ -1,0 +1,46 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: store-api-deployment
+  labels:
+    app: store-api
+spec:
+  selector:
+    matchLabels:
+      app: store-api
+  template:
+    metadata:
+      labels:
+        app: store-api
+    spec:
+      containers:
+      - name: store-api
+        image: chetanguptaa/store-api:1.0
+        resources:
+          limits:
+            memory: "128Mi"
+            cpu: "500m"
+        ports:
+        - containerPort: 3000
+        env:
+          - name: MONGO_URI
+            valueFrom:
+              configMapKeyRef:
+                name: mongodb-configmap
+                key: mongo_uri
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: store-api-service
+spec:
+  selector:
+    app: store-api
+  type: ClusterIP
+  ports:
+  - port: 80
+    targetPort: 3000
+    protocol: TCP
+
